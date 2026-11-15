@@ -1,0 +1,70 @@
+Imports System.Data
+Imports System.Data.SqlClient
+
+Public Class Form1
+    Dim cn As New SqlConnection("Data Source=.\SQLEXPRESS;AttachDbFilename='C:\Users\My Lappy\Documents\examdb.mdf';Integrated Security=True;Connect Timeout=30;User Instance=True")
+    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        LoadGrid()
+    End Sub
+    Private Sub LoadGrid()
+        Dim da As New SqlDataAdapter("select * from examtb", cn)
+        Dim dt As New DataTable
+        da.Fill(dt)
+        dgvex.DataSource = dt
+        MessageBox.Show("LOAD GRID CALL !!!")
+    End Sub
+    Private Sub btnins_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnins.Click
+        Dim cmd As New SqlCommand("insert into examtb(rno,nme)values(@rno,@nme)", cn)
+
+        cmd.Parameters.AddWithValue("@rno", rno.Text)
+        cmd.Parameters.AddWithValue("@nme", nme.Text)
+
+        cn.Open()
+        cmd.ExecuteNonQuery()
+        cn.Close()
+
+        LoadGrid()
+        MessageBox.Show("record inserted !!!")
+    End Sub
+
+    Private Sub btnupd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnupd.Click
+        Dim cmd As New SqlCommand("update examtb set nme=@nme where rno=@rno", cn)
+
+        cmd.Parameters.AddWithValue("@rno", rno.Text)
+        cmd.Parameters.AddWithValue("@nme", nme.Text)
+
+        cn.Open()
+        cmd.ExecuteNonQuery()
+        cn.Close()
+
+        LoadGrid()
+        MessageBox.Show("Record Updated !!!")
+    End Sub
+
+    Private Sub btndel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btndel.Click
+        Dim cmd As New SqlCommand("delete from examtb where rno=@rno", cn)
+
+        cmd.Parameters.AddWithValue("@rno", rno.Text)
+        cmd.Parameters.AddWithValue("@nme", nme.Text)
+
+        cn.Open()
+        cmd.ExecuteNonQuery()
+        cn.Close()
+
+        LoadGrid()
+        MessageBox.Show("Record Deleted !!!")
+    End Sub
+
+    Private Sub btnsea_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnsea.Click
+        Dim da As New SqlDataAdapter("select * from examtb where rno=@rno", cn)
+
+        da.SelectCommand.Parameters.AddWithValue("@rno", rno.Text)
+        Dim dt As New DataTable
+
+        da.Fill(dt)
+        dgvex.DataSource = dt
+
+        MessageBox.Show("DATA ADAPTER CALL !!!")
+    End Sub
+
+End Class
